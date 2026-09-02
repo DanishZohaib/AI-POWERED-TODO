@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
 
 interface DialogProps {
   open?: boolean;
@@ -14,7 +13,14 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in-50">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in-50"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && onOpenChange) {
+          onOpenChange(false);
+        }
+      }}
+    >
       {children}
     </div>
   );

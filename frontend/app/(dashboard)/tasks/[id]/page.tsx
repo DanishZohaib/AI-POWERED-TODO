@@ -15,12 +15,9 @@ import { TASK_STATUS_CONFIG, TASK_PRIORITY_CONFIG } from "@/lib/constants";
 import {
   ArrowLeft,
   CheckSquare,
-  Clock,
   User,
   UserCheck,
-  Calendar,
   Layers,
-  FileText,
   History,
   AlertTriangle,
   Loader2,
@@ -41,7 +38,7 @@ export default function TaskDetailPage() {
     try {
       const data = await taskService.getTask(taskId);
       setTask(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load task details:", err);
     } finally {
       setIsLoading(false);
@@ -226,7 +223,7 @@ export default function TaskDetailPage() {
                       </div>
                       {d.reason && (
                         <p className="text-[11px] text-slate-400 italic bg-slate-900/80 p-2 rounded border border-slate-800/60 mt-1">
-                          "{d.reason}"
+                          &ldquo;{d.reason}&rdquo;
                         </p>
                       )}
                     </div>
@@ -243,7 +240,7 @@ export default function TaskDetailPage() {
         isOpen={isDelegateOpen}
         onClose={() => setIsDelegateOpen(false)}
         onSuccess={loadTaskDetail}
-        task={task as any}
+        task={task}
       />
     </div>
   );

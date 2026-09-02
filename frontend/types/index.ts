@@ -337,6 +337,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   user: User;
+  access_token?: string;
   password_expired: boolean;
   must_change_password: boolean;
   days_until_expiry: number;

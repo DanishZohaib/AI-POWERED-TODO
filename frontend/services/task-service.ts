@@ -46,7 +46,10 @@ export const taskService = {
    * Default view="all" returns all team tasks (shared workspace).
    */
   async listTasks(params?: TaskFilterParams): Promise<PaginatedResponse<TaskListItem>> {
-    return api.get<PaginatedResponse<TaskListItem>>("/tasks", params as any);
+    return api.get<PaginatedResponse<TaskListItem>>(
+      "/tasks",
+      params as unknown as Record<string, string | number | boolean | undefined>
+    );
   },
 
   /**

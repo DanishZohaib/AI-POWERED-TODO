@@ -17,11 +17,6 @@ import {
   Power,
   RefreshCw,
   Loader2,
-  CheckCircle2,
-  ListOrdered,
-  Flag,
-  ArrowRight,
-  ShieldAlert,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -35,7 +30,7 @@ export default function CategoriesPage() {
     try {
       const data = await categoryService.listCategories(false);
       setCategories(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load categories:", err);
     } finally {
       setIsLoading(false);
@@ -51,8 +46,8 @@ export default function CategoriesPage() {
       const fullCategory = await categoryService.getCategory(catItem.id);
       setEditingCategory(fullCategory);
       setIsFormOpen(true);
-    } catch (err: any) {
-      alert(err.message || "Failed to load category details.");
+    } catch (err: unknown) {
+      alert((err as Error).message || "Failed to load category details.");
     }
   };
 
@@ -60,8 +55,8 @@ export default function CategoriesPage() {
     try {
       await categoryService.duplicateCategory(catItem.id);
       loadCategories();
-    } catch (err: any) {
-      alert(err.message || "Failed to duplicate category.");
+    } catch (err: unknown) {
+      alert((err as Error).message || "Failed to duplicate category.");
     }
   };
 
@@ -69,8 +64,8 @@ export default function CategoriesPage() {
     try {
       await categoryService.toggleActive(catItem.id);
       loadCategories();
-    } catch (err: any) {
-      alert(err.message || "Failed to toggle active status.");
+    } catch (err: unknown) {
+      alert((err as Error).message || "Failed to toggle active status.");
     }
   };
 

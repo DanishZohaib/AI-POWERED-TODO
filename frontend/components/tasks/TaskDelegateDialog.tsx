@@ -8,14 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { taskService } from "@/services/task-service";
 import { userService } from "@/services/user-service";
-import { TaskListItem, UserListItem } from "@/types";
+import { Task, TaskListItem, UserListItem } from "@/types";
 import { Loader2, UserCheck, AlertCircle } from "lucide-react";
 
 interface TaskDelegateDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  task: TaskListItem | null;
+  task: Task | TaskListItem | null;
 }
 
 export function TaskDelegateDialog({ isOpen, onClose, onSuccess, task }: TaskDelegateDialogProps) {
@@ -55,8 +55,8 @@ export function TaskDelegateDialog({ isOpen, onClose, onSuccess, task }: TaskDel
 
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to delegate task.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to delegate task.");
     } finally {
       setIsLoading(false);
     }

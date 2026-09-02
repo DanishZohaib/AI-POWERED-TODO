@@ -45,8 +45,8 @@ export default function LoginPage() {
       } else {
         router.push("/dashboard");
       }
-    } catch (err: any) {
-      setErrorMessage(err.message || "Invalid User ID or password. Please try again.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Invalid User ID or password. Please try again.");
     } finally {
       setIsLoading(false);
     }

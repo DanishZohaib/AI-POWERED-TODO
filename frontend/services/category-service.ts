@@ -1,5 +1,5 @@
 import { api } from "@/lib/api-client";
-import { Category, CategoryListItem, CategoryStage } from "@/types";
+import { Category, CategoryListItem } from "@/types";
 
 export interface CategoryStagePayload {
   id?: string;

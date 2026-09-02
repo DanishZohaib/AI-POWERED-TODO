@@ -116,29 +116,29 @@ export function SelectContent({ className, children }: { className?: string; chi
 
 export function SelectItem({ value, className, children }: { value: string; className?: string; children: React.ReactNode }) {
   const ctx = React.useContext(SelectContext);
-  if (!ctx) return null;
-
-  const isSelected = ctx.value === value;
 
   // Extract plain text label from children for display in trigger
-  const getTextLabel = (node: React.ReactNode): string => {
+  const getTextLabel = React.useCallback((node: React.ReactNode): string => {
     if (typeof node === "string") return node;
     if (typeof node === "number") return String(node);
-    if (React.isValidElement(node) && node.props.children) {
+    if (React.isValidElement<{ children?: React.ReactNode }>(node) && node.props.children) {
       return getTextLabel(node.props.children);
     }
     if (Array.isArray(node)) return node.map(getTextLabel).join(" ").trim();
     return "";
-  };
+  }, []);
 
   const label = getTextLabel(children);
+  const isSelected = ctx?.value === value;
 
   // When this item mounts and it's the currently selected value, set its label
   React.useEffect(() => {
-    if (isSelected && label) {
+    if (isSelected && label && ctx?.setSelectedLabel) {
       ctx.setSelectedLabel(label);
     }
-  }, [isSelected, label]);
+  }, [isSelected, label, ctx]);
+
+  if (!ctx) return null;
 
   return (
     <div

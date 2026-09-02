@@ -39,8 +39,8 @@ export function ResetPasswordDialog({ isOpen, onClose, onSuccess, user }: ResetP
       await userService.resetPassword(user.id, newPassword);
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to reset password.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to reset password.");
     } finally {
       setIsLoading(false);
     }

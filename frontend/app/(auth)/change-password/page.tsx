@@ -63,8 +63,8 @@ function ChangePasswordForm() {
       setTimeout(() => {
         router.push("/dashboard");
       }, 1500);
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to change password. Please check your current password.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to change password. Please check your current password.");
     } finally {
       setIsLoading(false);
     }

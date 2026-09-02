@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { WorkflowBuilder } from "@/components/categories/WorkflowBuilder";
 import { categoryService, CategoryStagePayload, CreateCategoryPayload } from "@/services/category-service";
 import { Category } from "@/types";
-import { Loader2, Layers, AlertCircle, Sparkles } from "lucide-react";
+import { Loader2, Layers, AlertCircle } from "lucide-react";
 
 interface CategoryFormDialogProps {
   isOpen: boolean;
@@ -118,8 +118,8 @@ export function CategoryFormDialog({ isOpen, onClose, onSuccess, editingCategory
 
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to save workflow category.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to save workflow category.");
     } finally {
       setIsLoading(false);
     }

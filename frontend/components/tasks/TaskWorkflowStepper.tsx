@@ -9,8 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/lib/utils";
 import {
   CheckCircle2,
-  Circle,
-  Clock,
   AlertCircle,
   Loader2,
   Lock,
@@ -45,8 +43,8 @@ export function TaskWorkflowStepper({ task, onUpdate }: TaskWorkflowStepperProps
       const updated = await workflowService.completeStage(task.id, stage.id, { comments });
       onUpdate(updated);
       setStageComments((prev) => ({ ...prev, [stage.id]: "" }));
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to complete stage.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to complete stage.");
     } finally {
       setLoadingStageId(null);
     }
@@ -59,8 +57,8 @@ export function TaskWorkflowStepper({ task, onUpdate }: TaskWorkflowStepperProps
     try {
       const updated = await workflowService.uncompleteStage(task.id, stage.id);
       onUpdate(updated);
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to revert stage status.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to revert stage status.");
     } finally {
       setLoadingStageId(null);
     }
@@ -168,7 +166,7 @@ export function TaskWorkflowStepper({ task, onUpdate }: TaskWorkflowStepperProps
                     {stage.comments && (
                       <div className="flex items-start space-x-2 text-slate-300 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80 mt-1">
                         <MessageSquare className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
-                        <p className="text-xs italic">"{stage.comments}"</p>
+                        <p className="text-xs italic">&ldquo;{stage.comments}&rdquo;</p>
                       </div>
                     )}
                   </div>

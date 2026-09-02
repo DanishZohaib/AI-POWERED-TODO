@@ -33,7 +33,16 @@ export function DropdownMenu({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function DropdownMenuTrigger({ asChild, children, ...props }: any) {
+export function DropdownMenuTrigger({
+  asChild,
+  children,
+  ...props
+}: {
+  asChild?: boolean;
+  children: React.ReactNode;
+  className?: string;
+  [key: string]: unknown;
+}) {
   const ctx = React.useContext(DropdownMenuContext);
   if (!ctx) return null;
 
@@ -42,8 +51,8 @@ export function DropdownMenuTrigger({ asChild, children, ...props }: any) {
     ctx.setIsOpen(!ctx.isOpen);
   };
 
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<any>, {
+  if (asChild && React.isValidElement<{ onClick?: (e: React.MouseEvent) => void }>(children)) {
+    return React.cloneElement(children, {
       onClick: handleClick,
       ...props,
     });

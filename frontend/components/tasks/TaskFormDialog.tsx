@@ -111,8 +111,8 @@ export function TaskFormDialog({ isOpen, onClose, onSuccess, editingTask }: Task
 
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to save task.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to save task.");
     } finally {
       setIsLoading(false);
     }
@@ -193,7 +193,7 @@ export function TaskFormDialog({ isOpen, onClose, onSuccess, editingTask }: Task
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-slate-300">Priority Level</Label>
-              <Select value={priority} onValueChange={(val: any) => setPriority(val)} disabled={isLoading}>
+              <Select value={priority} onValueChange={(val) => setPriority(val as TaskPriority)} disabled={isLoading}>
                 <SelectTrigger className="bg-slate-950/70 border-slate-800 text-slate-100">
                   <SelectValue />
                 </SelectTrigger>
@@ -226,7 +226,7 @@ export function TaskFormDialog({ isOpen, onClose, onSuccess, editingTask }: Task
             ) : (
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-slate-300">Task Status</Label>
-                <Select value={status} onValueChange={(val: any) => setStatus(val)} disabled={isLoading}>
+                <Select value={status} onValueChange={(val) => setStatus(val as TaskStatus)} disabled={isLoading}>
                   <SelectTrigger className="bg-slate-950/70 border-slate-800 text-slate-100">
                     <SelectValue />
                   </SelectTrigger>

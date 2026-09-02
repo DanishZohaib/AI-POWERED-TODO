@@ -100,8 +100,8 @@ export function UserFormDialog({ isOpen, onClose, onSuccess, editingUser }: User
 
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to save user details.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to save user details.");
     } finally {
       setIsLoading(false);
     }
@@ -147,7 +147,7 @@ export function UserFormDialog({ isOpen, onClose, onSuccess, editingUser }: User
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-slate-300">System Role</Label>
-              <Select value={role} onValueChange={(val: any) => setRole(val)} disabled={isLoading}>
+              <Select value={role} onValueChange={(val) => setRole(val as "POWER_ADMIN" | "STANDARD_USER")} disabled={isLoading}>
                 <SelectTrigger className="bg-slate-950/70 border-slate-800 text-slate-100">
                   <SelectValue />
                 </SelectTrigger>

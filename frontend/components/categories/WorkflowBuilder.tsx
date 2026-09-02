@@ -4,7 +4,6 @@ import React from "react";
 import { CategoryStagePayload } from "@/services/category-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,10 +11,7 @@ import {
   Trash2,
   ArrowUp,
   ArrowDown,
-  CheckCircle2,
   Flag,
-  GripVertical,
-  HelpCircle,
 } from "lucide-react";
 
 interface WorkflowBuilderProps {
@@ -37,7 +33,11 @@ export function WorkflowBuilder({ stages, onChange, readOnly = false }: Workflow
     onChange([...stages, newStage]);
   };
 
-  const updateStage = (index: number, field: keyof CategoryStagePayload, value: any) => {
+  const updateStage = <K extends keyof CategoryStagePayload>(
+    index: number,
+    field: K,
+    value: CategoryStagePayload[K]
+  ) => {
     const updated = [...stages];
     
     // If marking as completion stage, optionally unmark others or allow single completion stage

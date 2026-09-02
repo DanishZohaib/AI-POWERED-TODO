@@ -20,7 +20,9 @@ class ApiClient {
    * Build URL with query parameters, filtering out undefined values.
    */
   private buildUrl(path: string, params?: Record<string, string | number | boolean | undefined>): string {
-    const url = new URL(`${this.baseUrl}${path}`);
+    const cleanBase = this.baseUrl.replace(/\/+$/, "");
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    const url = new URL(`${cleanBase}${cleanPath}`);
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== "") {
@@ -32,19 +34,28 @@ class ApiClient {
   }
 
   /**
-   * Core request method — handles auth cookies, JSON parsing, and error formatting.
+   * Core request method — handles auth cookies, tokens, JSON parsing, and error formatting.
    */
   async request<T>(path: string, options: RequestOptions = {}): Promise<T> {
     const { params, ...fetchOptions } = options;
     const url = this.buildUrl(path, params);
 
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...((fetchOptions.headers as Record<string, string>) || {}),
+    };
+
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("token");
+      if (storedToken && !headers["Authorization"]) {
+        headers["Authorization"] = `Bearer ${storedToken}`;
+      }
+    }
+
     const response = await fetch(url, {
       ...fetchOptions,
       credentials: "include", // Send HTTP-only cookies
-      headers: {
-        "Content-Type": "application/json",
-        ...fetchOptions.headers,
-      },
+      headers,
     });
 
     // Handle non-JSON responses (e.g., file downloads)

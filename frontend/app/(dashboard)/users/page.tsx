@@ -6,7 +6,7 @@ import { UserListItem, PaginatedResponse } from "@/types";
 import { UserFormDialog } from "@/components/users/UserFormDialog";
 import { ResetPasswordDialog } from "@/components/users/ResetPasswordDialog";
 import { ExtendExpiryDialog } from "@/components/users/ExtendExpiryDialog";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -59,7 +59,7 @@ export default function UsersPage() {
         page_size: 15,
       });
       setData(response);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load users:", err);
     } finally {
       setIsLoading(false);
@@ -74,8 +74,8 @@ export default function UsersPage() {
     try {
       await userService.toggleActive(user.id);
       loadUsers();
-    } catch (err: any) {
-      alert(err.message || "Failed to update user status.");
+    } catch (err: unknown) {
+      alert((err as Error).message || "Failed to update user status.");
     }
   };
 

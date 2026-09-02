@@ -20,7 +20,6 @@ import {
   Building2,
   Sun,
   Moon,
-  User as UserIcon,
   ChevronDown,
 } from "lucide-react";
 

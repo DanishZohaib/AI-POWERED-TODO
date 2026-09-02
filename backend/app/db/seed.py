@@ -77,67 +77,8 @@ async def seed_database():
         await session.flush()
         print(f"  [+] Admin created: {admin_user.user_code} ({admin_user.full_name})")
 
-        # ─── 3. Create Sample Standard Users ───
-        sample_users_data = [
-            {
-                "user_code": "USER001",
-                "full_name": "Muhammad Ali",
-                "department": "Finance",
-                "designation": "Senior Accountant",
-            },
-            {
-                "user_code": "USER002",
-                "full_name": "Fatima Khan",
-                "department": "Finance",
-                "designation": "Accounts Officer",
-            },
-            {
-                "user_code": "USER003",
-                "full_name": "Ahmed Hassan",
-                "department": "Finance",
-                "designation": "Finance Manager",
-            },
-            {
-                "user_code": "USER004",
-                "full_name": "Sara Malik",
-                "department": "HR",
-                "designation": "HR Executive",
-            },
-            {
-                "user_code": "USER005",
-                "full_name": "Omar Siddiqui",
-                "department": "Legal",
-                "designation": "Legal Officer",
-            },
-        ]
+        # ─── 3. (Optional Sample Users Omitted — Only Admin Created) ───
 
-        sample_users = []
-        for user_data in sample_users_data:
-            user = User(
-                id=uuid.uuid4(),
-                user_code=user_data["user_code"],
-                full_name=user_data["full_name"],
-                department=user_data["department"],
-                designation=user_data["designation"],
-                role="STANDARD_USER",
-                team_id=default_team.id,
-                password_hash=hash_password("User@12345"),
-                password_created_at=now,
-                password_changed_at=None,
-                password_expiry_days=settings.DEFAULT_PASSWORD_EXPIRY_DAYS,
-                password_expires_at=admin_expiry,
-                must_change_password=True,
-                is_active=True,
-                last_login_at=None,
-                created_at=now,
-                updated_at=now,
-            )
-            session.add(user)
-            sample_users.append(user)
-
-        await session.flush()
-        for u in sample_users:
-            print(f"  [+] User created: {u.user_code} ({u.full_name})")
 
         # ─── 4. Create Category: Normal Final Settlement ───
         cat_normal_fs = Category(

@@ -34,7 +34,10 @@ export const userService = {
    * List users with optional search, role, status filters, and pagination.
    */
   async listUsers(params?: UserFilterParams): Promise<PaginatedResponse<UserListItem>> {
-    return api.get<PaginatedResponse<UserListItem>>("/users", params as any);
+    return api.get<PaginatedResponse<UserListItem>>(
+      "/users",
+      params as unknown as Record<string, string | number | boolean | undefined>
+    );
   },
 
   /**

@@ -20,12 +20,9 @@ import {
   Activity,
   RefreshCw,
   Loader2,
-  Calendar,
   User,
   ShieldCheck,
-  Layers,
   FileSpreadsheet,
-  Download,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -61,7 +58,7 @@ export default function DashboardPage() {
     try {
       const summary = await dashboardService.getSummary(period);
       setData(summary);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load dashboard summary:", err);
     } finally {
       setIsLoading(false);
@@ -76,8 +73,8 @@ export default function DashboardPage() {
     setIsExporting(true);
     try {
       await reportService.downloadExcelReport();
-    } catch (err: any) {
-      alert(err.message || "Failed to download Excel report.");
+    } catch (err: unknown) {
+      alert((err as Error).message || "Failed to download Excel report.");
     } finally {
       setIsExporting(false);
     }
@@ -128,7 +125,7 @@ export default function DashboardPage() {
             ].map((p) => (
               <button
                 key={p.id}
-                onClick={() => setPeriod(p.id as any)}
+                onClick={() => setPeriod(p.id as "7d" | "30d" | "90d" | "1y" | "all")}
                 className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${
                   period === p.id
                     ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
@@ -380,30 +377,33 @@ export default function DashboardPage() {
                 <div className="p-8 text-center text-slate-500 text-xs">No recent team activities recorded.</div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {(data?.recent_activities || data?.recent_audit_logs || []).map((act: any) => (
-                    <div
-                      key={act.id}
-                      className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-start space-x-3 text-xs"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
-                        <User className="w-4 h-4" />
-                      </div>
-                      <div className="space-y-1 flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-slate-200 truncate">{act.user_name}</span>
-                          <span className="text-[10px] font-mono text-slate-500">{formatDate(act.created_at)}</span>
+                  {(data?.recent_activities || data?.recent_audit_logs || []).map((act) => {
+                    const activity = act as { id: string; user_name: string; created_at?: string; timestamp?: string; action_type: string; details?: string; description?: string };
+                    return (
+                      <div
+                        key={activity.id}
+                        className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-start space-x-3 text-xs"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                          <User className="w-4 h-4" />
                         </div>
-                        <div className="text-slate-400 text-[11px]">
-                          Action: <span className="font-mono text-blue-400">{act.action_type}</span>
-                        </div>
-                        {act.details && (
-                          <div className="text-[10px] text-slate-400 truncate bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800/60">
-                            {act.details}
+                        <div className="space-y-1 flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-slate-200 truncate">{activity.user_name}</span>
+                            <span className="text-[10px] font-mono text-slate-500">{formatDate(activity.created_at || activity.timestamp || "")}</span>
                           </div>
-                        )}
+                          <div className="text-slate-400 text-[11px]">
+                            Action: <span className="font-mono text-blue-400">{activity.action_type}</span>
+                          </div>
+                          {(activity.details || activity.description) && (
+                            <div className="text-[10px] text-slate-400 truncate bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800/60">
+                              {activity.details || activity.description}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

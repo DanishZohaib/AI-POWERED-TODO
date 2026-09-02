@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { taskService } from "@/services/task-service";
 import { categoryService } from "@/services/category-service";
-import { TaskListItem, CategoryListItem, PaginatedResponse, TaskPriority, TaskStatus } from "@/types";
+import { Task, TaskListItem, CategoryListItem, PaginatedResponse, TaskPriority, TaskStatus } from "@/types";
 import { TaskFormDialog } from "@/components/tasks/TaskFormDialog";
 import { TaskDelegateDialog } from "@/components/tasks/TaskDelegateDialog";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils";
 import { TASK_STATUS_CONFIG, TASK_PRIORITY_CONFIG } from "@/lib/constants";
 import {
   CheckSquare,
@@ -25,12 +24,6 @@ import {
   Trash2,
   RefreshCw,
   Loader2,
-  Clock,
-  AlertTriangle,
-  User,
-  Layers,
-  Filter,
-  CheckCircle2,
 } from "lucide-react";
 
 export default function TasksPage() {
@@ -46,12 +39,12 @@ export default function TasksPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [selectedPriority, setSelectedPriority] = useState<string>("ALL");
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
-  const [overdueOnly, setOverdueOnly] = useState(false);
+  const [overdueOnly] = useState(false);
   const [page, setPage] = useState(1);
 
   // Dialog States
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState<any | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const [isDelegateOpen, setIsDelegateOpen] = useState(false);
   const [delegateTargetTask, setDelegateTargetTask] = useState<TaskListItem | null>(null);
@@ -74,7 +67,7 @@ export default function TasksPage() {
         page_size: 15,
       });
       setData(response);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load tasks:", err);
     } finally {
       setIsLoading(false);
@@ -90,8 +83,8 @@ export default function TasksPage() {
       const fullTask = await taskService.getTask(item.id);
       setEditingTask(fullTask);
       setIsFormOpen(true);
-    } catch (err: any) {
-      alert(err.message || "Failed to load task details.");
+    } catch (err: unknown) {
+      alert((err as Error).message || "Failed to load task details.");
     }
   };
 
@@ -100,8 +93,8 @@ export default function TasksPage() {
     try {
       await taskService.deleteTask(item.id);
       loadTasks();
-    } catch (err: any) {
-      alert(err.message || "Failed to delete task.");
+    } catch (err: unknown) {
+      alert((err as Error).message || "Failed to delete task.");
     }
   };
 
@@ -175,7 +168,7 @@ export default function TasksPage() {
           <button
             key={tab.id}
             onClick={() => {
-              setView(tab.id as any);
+              setView(tab.id as "all" | "my_tasks" | "created_by_me" | "assigned_to_me");
               setPage(1);
             }}
             className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all ${

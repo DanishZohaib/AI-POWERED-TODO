@@ -7,13 +7,20 @@ export const authService = {
    * Sets HTTP-only authentication cookie via backend response.
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    return api.post<LoginResponse>("/auth/login", credentials);
+    const res = await api.post<LoginResponse>("/auth/login", credentials);
+    if (typeof window !== "undefined" && res.access_token) {
+      localStorage.setItem("token", res.access_token);
+    }
+    return res;
   },
 
   /**
-   * Log out and clear session cookie.
+   * Log out and clear session cookie and local token.
    */
   async logout(): Promise<{ message: string }> {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+    }
     return api.post<{ message: string }>("/auth/logout");
   },
 

@@ -32,8 +32,8 @@ export function ExtendExpiryDialog({ isOpen, onClose, onSuccess, user }: ExtendE
       await userService.extendPasswordExpiry(user.id, additionalDays);
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to extend password validity.");
+    } catch (err: unknown) {
+      setErrorMessage((err as Error).message || "Failed to extend password validity.");
     } finally {
       setIsLoading(false);
     }
